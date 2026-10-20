@@ -42,4 +42,20 @@ go run ./cmd/server
 go run ./cmd/smoke --diagnose
 go test -v ./...
 ```
-# axosbackend
+## Docker
+
+From inside `axosbackend/`, build and start the backend:
+
+```bash
+docker build -t axosbackend .
+docker run --rm --name axosbackend -p 8787:8787 --env-file .env axosbackend
+```
+
+The `.env` file must contain `ALIENX_SERVER_TOKEN` (at least 32 characters)
+and at least one provider key: `GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, or
+`SARVAM_API_KEY`. Credentials are supplied at runtime and excluded from the
+build context. The container runs as a non-root user and includes CA
+certificates for provider HTTPS requests.
+
+Check readiness at `http://localhost:8787/health`. If `.env` overrides
+`ALIENX_PORT` or `PORT`, adjust the container port mapping to match.
